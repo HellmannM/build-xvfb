@@ -1,0 +1,11 @@
+default.xkm
+libfontenc
+libxcvt
+libxfont
+libxkbfile
+libxtrans
+macros
+xkbcomp
+xorgproto
+xserver
+
