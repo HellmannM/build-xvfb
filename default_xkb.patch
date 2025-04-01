@@ -1,0 +1,35 @@
+diff --git a/xkb/ddxLoad.c b/xkb/ddxLoad.c
+index a231e96bf..51238e5a4 100644
+--- a/xkb/ddxLoad.c
++++ b/xkb/ddxLoad.c
+@@ -124,7 +124,8 @@ RunXkbComp(xkbcomp_buffer_callback callback, void *userdata)
+     char tmpname[PATH_MAX];
+     const char *xkmfile = tmpname;
+ #else
+-    const char *xkmfile = "-";
++    //const char *xkmfile = "-";
++    const char *xkmfile = "default.xkm";
+ #endif
+
+     snprintf(keymap, sizeof(keymap), "server-%s", display);
+diff --git a/xkb/xkbInit.c b/xkb/xkbInit.c
+index d3259225f..446e967b2 100644
+--- a/xkb/xkbInit.c
++++ b/xkb/xkbInit.c
+@@ -815,6 +815,16 @@ XkbProcessArguments(int argc, char *argv[], int i)
+             XkbDfltRepeatInterval = (long) atoi(argv[i]);
+         return 2;
+     }
++    // ADDED - Change xkbcomp bin directory with an environment variable
++    char *xkbBinDir = getenv("XKB_BINDIR");
++    if (xkbBinDir) {
++        XkbBinDirectory = Xstrdup(xkbBinDir);
++    }
++    // ADDED - Change base xkb directory with an environment variable
++    char *xkbBaseDir = getenv("XKBDIR");
++    if (xkbBaseDir) {
++        XkbBaseDirectory = Xstrdup(xkbBaseDir);
++    }
+     return 0;
+ }
+
