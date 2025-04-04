@@ -8,4 +8,5 @@ macros
 xkbcomp
 xorgproto
 xserver
+util
 
