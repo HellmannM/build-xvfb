@@ -35,7 +35,7 @@ pushd build
 ninja
 ninja install
 popd
-export LIBXKBFILE=$PWD/install/share/pkgconfig:$PWD/build
+export LIBXKBFILE=$PWD/install/lib64/pkgconfig
 popd
 
 pushd xkbcomp
