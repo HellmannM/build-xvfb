@@ -9,6 +9,6 @@ export XFONT2=$PWD/libxfont/install/lib
 export XKBDIR=$PWD/xkbdata/xkb
 export XKB_BINDIR=$PWD/xkbcomp
 
-LD_LIBRARY_PATH=$XKBFILE:$XFONT2:$LD_LIBRARY_PATH $PWD/xserver/install/bin/Xvfb :99 -nolisten tcp +extension GLX +extension RENDER +extension DOUBLE-BUFFER
+LIBGL_ALWAYS_INDIRECT=1 LD_LIBRARY_PATH=$XKBFILE:$XFONT2:$LD_LIBRARY_PATH $PWD/xserver/install/bin/Xvfb :99 -nolisten tcp +extension GLX +extension RENDER +extension DOUBLE-BUFFER
 
 #env DISPLAY=:99 vglrun glxinfo
