@@ -7,8 +7,6 @@ export XFONT2=$PWD/libxfont/install/lib
 
 export XKBDIR=$PWD/xkbdata/xkb
 export XKB_BINDIR=$PWD/xkbcomp
-#export XKB_OUTPUT_DIR=$XKBDIR
 
-#LD_LIBRARY_PATH=$XKBFILE:$XFONT2:$LD_LIBRARY_PATH $PWD/xserver/install/bin/Xvfb :99 -nolisten tcp
-LD_LIBRARY_PATH=$XKBFILE:$XFONT2:$LD_LIBRARY_PATH $PWD/xserver/install/bin/Xvfb :99
+LD_LIBRARY_PATH=$XKBFILE:$XFONT2:$LD_LIBRARY_PATH $PWD/xserver/install/bin/Xvfb :99 -nolisten tcp
 
