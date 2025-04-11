@@ -82,7 +82,8 @@ popd
 
 pushd util
 if [ "$BUILD_UTIL" -eq 1 ]; then
-    ./autogen.sh
+    DEPS="$MACROS"
+    ACLOCAL_PATH="$DEPS:$ACLOCAL_PATH" PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" ./autogen.sh
     ./configure --prefix=$PWD/install
     make -j10
     make install
@@ -141,7 +142,7 @@ if [ "$APPLY_XSERVER_PATCH" -eq 1 ]; then
 fi
 if [ "$BUILD_XSERVER" -eq 1 ]; then
     DEPS="$XORGPROTO:$LIBXKBFILE:$LIBXFONT:$LIBFONTENC:$LIBXCVT:$LIBXTRANS:$XKBCOMP"
-    PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" meson setup build --reconfigure -Dudev=false -Dudev_kms=false -Dglx=true --prefix="$PWD/install"
+    PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" meson setup build -Dudev=false -Dudev_kms=false -Dglx=true --prefix="$PWD/install"
     pushd build
     ninja
     ninja install
