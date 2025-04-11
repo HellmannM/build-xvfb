@@ -9,6 +9,7 @@ CLONE_LIBFONTENC=1
 CLONE_LIBXTRANS=1
 CLONE_LIBXFONT=1
 CLONE_LIBXCVT=1
+CLONE_LIBXDMCP=1
 CLONE_XSERVER=1
 
 APPLY_XSERVER_PATCH=1
@@ -22,6 +23,7 @@ BUILD_LIBFONTENC=1
 BUILD_LIBXTRANS=1
 BUILD_LIBXFONT=1
 BUILD_LIBXCVT=1
+BUILD_LIBXDMCP=1
 BUILD_XSERVER=1
 
 ##############################
@@ -35,6 +37,7 @@ BUILD_XSERVER=1
 [ "$CLONE_LIBXTRANS"    -eq 1 ] && git clone https://gitlab.freedesktop.org/xorg/lib/libxtrans.git
 [ "$CLONE_LIBXFONT"     -eq 1 ] && git clone https://gitlab.freedesktop.org/xorg/lib/libxfont.git
 [ "$CLONE_LIBXCVT"      -eq 1 ] && git clone https://gitlab.freedesktop.org/xorg/lib/libxcvt.git
+[ "$CLONE_LIBXDMCP"     -eq 1 ] && git clone https://gitlab.freedesktop.org/xorg/lib/libxdmcp.git
 [ "$CLONE_XSERVER"      -eq 1 ] && git clone https://gitlab.freedesktop.org/xorg/xserver.git
 
 pushd macros
@@ -117,7 +120,7 @@ pushd libxfont
 if [ "$BUILD_LIBXFONT" -eq 1 ]; then
     DEPS="$MACROS:$LIBFONTENC:$LIBXTRANS:$UTIL"
     ACLOCAL_PATH="$DEPS:$ACLOCAL_PATH" PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" ./autogen.sh
-    ./configure --prefix=$PWD/install
+    ACLOCAL_PATH="$DEPS:$ACLOCAL_PATH" PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" ./configure --prefix=$PWD/install
     make -j10
     make install
 fi
@@ -135,13 +138,25 @@ fi
 export LIBXCVT=$PWD/install/lib64/pkgconfig
 popd
 
+pushd libxdmcp
+if [ "$BUILD_LIBXDMCP" -eq 1 ]; then
+    DEPS="$MACROS:$LIBFONTENC:$LIBXKBFILE:$LIBXFONT:$LIBXCVT:$UTIL"
+    ACLOCAL_PATH="$DEPS:$ACLOCAL_PATH" PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" ./autogen.sh
+    ACLOCAL_PATH="$DEPS:$ACLOCAL_PATH" PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" ./configure --prefix=$PWD/install
+    make -j10
+    make install
+    popd
+fi
+export LIBXDMCP=$PWD/install/lib/pkgconfig
+popd
+
 pushd xserver
 if [ "$APPLY_XSERVER_PATCH" -eq 1 ]; then
     cp ../default_xkb.patch ./default_xkb.patch
     git apply default_xkb.patch
 fi
 if [ "$BUILD_XSERVER" -eq 1 ]; then
-    DEPS="$XORGPROTO:$LIBXKBFILE:$LIBXFONT:$LIBFONTENC:$LIBXCVT:$LIBXTRANS:$XKBCOMP"
+    DEPS="$XORGPROTO:$LIBXKBFILE:$LIBXFONT:$LIBFONTENC:$LIBXCVT:$LIBXTRANS:$XKBCOMP:$LIBXDMCP"
     PKG_CONFIG_PATH="$DEPS:$PKG_CONFIG_PATH" meson setup build -Dudev=false -Dudev_kms=false -Dglx=true --prefix="$PWD/install"
     pushd build
     ninja
